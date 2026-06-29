@@ -1,6 +1,9 @@
 "use client";
 
 import { FadeImage } from "@/components/fade-image";
+import { TiltCard } from "@/components/tilt-card";
+import { StaggerReveal } from "@/components/stagger-reveal";
+import { Reveal } from "@/components/stagger-reveal";
 
 const accessories = [
   {
@@ -50,32 +53,40 @@ const accessories = [
 
 export function CollectionSection() {
   return (
-    <section id="accessories" className="bg-background">
+    <section id="accessories" className="bg-background relative overflow-hidden">
       {/* Section Title */}
-      <div className="px-6 py-20 md:px-12 lg:px-20 md:py-10">
-        <h2 className="text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-          Essential Bio-Gear
-        </h2>
-      </div>
+      <Reveal>
+        <div className="px-6 py-20 md:px-12 lg:px-20 md:py-10">
+          <h2 className="text-3xl font-medium tracking-tight text-foreground md:text-4xl">
+            Essential Bio-Gear
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground max-w-md">
+            Precision accessories engineered to extend your Kinesis ecosystem
+          </p>
+        </div>
+      </Reveal>
 
       {/* Accessories Grid/Carousel */}
       <div className="pb-24">
         {/* Mobile: Horizontal Carousel */}
-        <div className="flex gap-6 overflow-x-auto px-6 pb-4 md:hidden snap-x snap-mandator scrollbar-hide">
+        <div className="flex gap-6 overflow-x-auto px-6 pb-4 md:hidden snap-x snap-mandatory scrollbar-hide">
           {accessories.map((accessory) => (
             <div
               key={accessory.id}
-              className="group flex-shrink-0 w-[75vw] snap-center"
+              className="group shrink-0 w-[75vw] snap-center"
             >
-              {/* Image */}
-              <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-secondary">
-                <FadeImage
-                  src={accessory.image || "/placeholder.svg"}
-                  alt={accessory.name}
-                  fill
-                  className="object-cover group-hover:scale-105"
-                />
-              </div>
+              <TiltCard maxTilt={5} scale={1.01} glare={true}>
+                {/* Image */}
+                <div className="relative aspect-2/3 overflow-hidden rounded-2xl bg-secondary">
+                  <FadeImage
+                    src={accessory.image || "/placeholder.svg"}
+                    alt={accessory.name}
+                    fill
+                    className="object-cover transition-all duration-700 ease-out group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                </div>
+              </TiltCard>
 
               {/* Content */}
               <div className="py-6">
@@ -98,17 +109,28 @@ export function CollectionSection() {
         </div>
 
         {/* Desktop: Grid */}
-        <div className="hidden md:grid md:grid-cols-3 gap-8 md:px-12 lg:px-20">
+        <StaggerReveal
+          className="hidden md:grid md:grid-cols-3 gap-8 md:px-12 lg:px-20"
+          baseDelay={0.05}
+          threshold={0.05}
+        >
           {accessories.map((accessory) => (
-            <div key={accessory.id} className="group">
+            <TiltCard
+              key={accessory.id}
+              className="group rounded-2xl"
+              maxTilt={5}
+              scale={1.02}
+              glare={true}
+            >
               {/* Image */}
-              <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-secondary">
+              <div className="relative aspect-2/3 overflow-hidden rounded-2xl bg-secondary">
                 <FadeImage
                   src={accessory.image || "/placeholder.svg"}
                   alt={accessory.name}
                   fill
-                  className="object-cover group-hover:scale-105"
+                  className="object-cover transition-all duration-700 ease-out group-hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </div>
 
               {/* Content */}
@@ -127,9 +149,9 @@ export function CollectionSection() {
                   </span>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

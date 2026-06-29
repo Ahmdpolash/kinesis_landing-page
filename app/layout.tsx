@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AmbientGlow } from "@/components/ambient-glow"
 import './globals.css'
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
@@ -31,9 +32,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
+        <AmbientGlow color="rgba(14, 165, 233, 0.06)" size={800} />
         <Analytics />
       </body>
     </html>

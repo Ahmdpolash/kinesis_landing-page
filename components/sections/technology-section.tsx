@@ -36,21 +36,29 @@ function ScrollRevealText({ text }: { text: string }) {
   return (
     <p
       ref={containerRef}
-      className="text-3xl font-semibold leading-snug md:text-4xl lg:text-5xl"
+      className="text-3xl leading-snug md:text-4xl lg:text-5xl font-light"
     >
       {words.map((word, index) => {
         const wordProgress = index / words.length;
-        const isRevealed = progress > wordProgress;
+        const rawRevealed = (progress - wordProgress) * words.length;
+        const isRevealed = rawRevealed > 0;
+        const revealAmount = Math.max(0, Math.min(1, rawRevealed));
+        // Ease out
+        const eased = 1 - Math.pow(1 - revealAmount, 3);
         
         return (
           <span
             key={index}
-            className="transition-colors duration-150"
+            className="inline-block transition-all duration-300 will-change-transform"
             style={{
               color: isRevealed ? "var(--foreground)" : "#e4e4e7",
+              opacity: 0.4 + eased * 0.6,
+              transform: `translateY(${(1 - eased) * 12}px) scale(${0.95 + eased * 0.05})`,
+              filter: `blur(${(1 - eased) * 6}px)`,
+              letterSpacing: isRevealed ? "normal" : "0.05em",
             }}
           >
-            {word}{index < words.length - 1 ? " " : ""}
+            {word}{index < words.length - 1 ? "\u00A0" : ""}
           </span>
         );
       })}
@@ -205,6 +213,11 @@ export function TechnologySection() {
               />
               <div className="absolute inset-0 bg-foreground/40" />
               
+              {/* Animated scan line overlay */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/3 to-transparent animate-scan" style={{ animation: 'scan 4s linear infinite' }} />
+              </div>
+
               {/* Title Text - Fades out word by word with blur */}
               <div 
                 className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
